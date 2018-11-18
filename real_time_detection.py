@@ -10,12 +10,12 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 from mrcnn.config import Config
 from mrcnn import model as modellib, utils
 from mrcnn import visualize
-import surgery
+import nsfw
 # Directory to save logs and model checkpoints, if not provided
 # through the command line argument --logs
-PRETRAINED_MODEL_PATH = "/home/simon/logs/surgery_200/200_images_mask_rcnn_surgery.h5"
+PRETRAINED_MODEL_PATH = "/home/simon/logs/nsfw_200/200_images_mask_rcnn_nsfw.h5"
 
-class InferenceConfig(surgery.SurgeryConfig):
+class InferenceConfig(nsfw.nsfwConfig):
     # Set batch size to 1 since we'll be running inference on
     # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
     GPU_COUNT = 1
@@ -27,7 +27,7 @@ if __name__ == '__main__':
      config = InferenceConfig()
      config.display()
 
-     model = modellib.MaskRCNN(mode="inference", config=config, model_dir='/home/simon/logs/surgery_200')
+     model = modellib.MaskRCNN(mode="inference", config=config, model_dir='/home/simon/logs/nsfw_200')
      model_path = PRETRAINED_MODEL_PATH
      # or if you want to use the latest trained model, you can use :
      # model_path = model.find_last()[1]

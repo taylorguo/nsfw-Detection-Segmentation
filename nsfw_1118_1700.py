@@ -28,8 +28,6 @@ Usage: import the module (see Jupyter notebooks for examples), or run from
     #Detect and color splash on a video with a specific pre-trained weights of yours.
     python sugery.py splash --weights=/home/.../logs/mask_rcnn_nsfw_0030.h5  --video=/home/simon/Videos/Center.wmv
 """
-from PIL import ImageFile
-ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 import os
 import sys
@@ -67,7 +65,7 @@ class nsfwConfig(Config):
 
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
-    IMAGES_PER_GPU = 1
+    IMAGES_PER_GPU = 2
 
     # Number of classes (including background)
     NUM_CLASSES = 1 + 13  # Background + objects
@@ -103,13 +101,15 @@ class nsfwDataset(utils.Dataset):
         self.add_class("nsfw", 11, "penis_model")
         self.add_class("nsfw", 12, "penis_toy")
         self.add_class("nsfw", 13, "half_naked")
-        if hc is True:
-            for i in range(1,14):
-                self.add_class("nsfw", i, "{}".format(i))
-            self.add_class("nsfw", 14, "Bra")
+
+
+        # if hc is True:
+        #     for i in range(1,14):
+        #         self.add_class("nsfw", i, "{}".format(i))
+        #     self.add_class("nsfw", 14, "half_naked")
 
         # Train or validation dataset?
-        assert subset in ["train", "val", "predict"]
+        assert subset in ["train", "val"]
         dataset_dir = os.path.join(dataset_dir, subset)
 
         # Load annotations
@@ -209,6 +209,7 @@ class nsfwDataset(utils.Dataset):
                 class_ids[i] = 12
             elif p['name'] == 'ha':
                 class_ids[i] = 13
+
             #assert code here to extend to other labels
         class_ids = class_ids.astype(int)
         # Return mask, and array of class IDs of each instance. Since we have
@@ -250,32 +251,8 @@ class nsfwDataset(utils.Dataset):
         class_ids = np.zeros([len(info["polygons"])])
         # In the nsfw dataset, pictures are labeled with name 'a' and 'r' representing arm and ring.
         for i, p in enumerate(class_names):
-            if p['name'] == 'be':
-                class_ids[i] = 1
-            elif p['name'] == 'ba':
-                class_ids[i] = 2
-            elif p['name'] == 'cv':
-                class_ids[i] = 3
-            elif p['name'] == 'nc':
-                class_ids[i] = 4
-            elif p['name'] == 'bk':
-                class_ids[i] = 5
-            elif p['name'] == 'bn':
-                class_ids[i] = 6
-            elif p['name'] == 'bb':
-                class_ids[i] = 7
-            elif p['name'] == 'bp':
-                class_ids[i] = 8
-            elif p['name'] == 'bc':
-                class_ids[i] = 9
-            elif p['name'] == 'ps':
-                class_ids[i] = 10
-            elif p['name'] == 'pm':
-                class_ids[i] = 11
-            elif p['name'] == 'pt':
-                class_ids[i] = 12
-            elif p['name'] == 'ha':
-                class_ids[i] = 13
+            if p['name'] == 'half_naked':
+                class_ids[i] = 14
             elif p['name'] == 'error':
                 pass
             else:
